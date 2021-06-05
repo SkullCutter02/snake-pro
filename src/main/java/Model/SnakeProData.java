@@ -1,10 +1,6 @@
 package Model;
 
 import Controller.TestGame;
-import Model.BoardCell;
-import Model.CellType;
-import Model.Preferences;
-import Model.SnakeMode;
 
 import java.awt.Color;
 import java.lang.Math;
@@ -504,6 +500,35 @@ public class SnakeProData {
 
 	// Step 4: calculate the new direction after reversing!
 
+	private boolean isCellMatch(BoardCell cell1, BoardCell cell2) {
+		return cell1.getRow() == cell2.getRow() && cell1.getColumn() == cell2.getColumn();
+	}
+
+	private <T> void reverseList(LinkedList<T> list) {
+		if(list.size() == 0) return;
+
+		T item = list.remove(0);
+		reverseList(list);
+		list.add(item);
+	}
+
+	public void reverse() {
+		this.getSnakeHead().becomeBody();
+
+		this.reverseList(this.snakeCells);
+
+		this.snakeCells.getLast().becomeHead();
+
+		if(this.getNorthNeighbor().isBody() && isCellMatch(this.getNorthNeighbor(), this.getSnakeNeck()))
+			this.setDirectionSouth();
+		else if(this.getSouthNeighbor().isBody() && isCellMatch(this.getSouthNeighbor(), this.getSnakeNeck()))
+			this.setDirectionNorth();
+		else if(this.getEastNeighbor().isBody() && isCellMatch(this.getEastNeighbor(), this.getSnakeNeck()))
+			this.setDirectionWest();
+		else if(this.getWestNeighbor().isBody() && isCellMatch(this.getWestNeighbor(), this.getSnakeNeck()))
+			this.setDirectionEast();
+	}
+
 	/* ------------------------------------- */
 	/* Methods to reset the model for search */
 	/* ------------------------------------- */
@@ -658,14 +683,24 @@ public class SnakeProData {
 	}
 	
 	public String toStringParents() {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		for (int r = 0; r < this.getNumRows(); r++) {
 			for (int c = 0; c < this.getNumColumns(); c++) {
 				BoardCell cell = this.getCell(r, c);
-				result += cell.toStringParent() + "\t";
+				result.append(cell.toStringParent()).append("\t");
 			}
-			result += "\n";
+			result.append("\n");
 		}
-		return result;
+		return result.toString();
+	}
+
+	public void appendHead(BoardCell newHead) {
+		newHead.becomeHead();
+		this.snakeCells.addLast(newHead);
+	}
+
+	public void removeTail() {
+		this.snakeCells.get(0).becomeOpen();
+		this.snakeCells.poll();
 	}
 }

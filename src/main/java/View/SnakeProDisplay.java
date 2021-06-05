@@ -39,9 +39,9 @@ public class SnakeProDisplay {
 	public SnakeProDisplay(SnakeProData theBoardInput, Graphics theScreenInput,
 						   int widthInput, int heightInput) {
 		this.theScreen = theScreenInput;
-		this.theData   = theBoardInput;
-		this.height    = heightInput;
-		this.width     = widthInput;
+		this.theData = theBoardInput;
+		this.height = heightInput;
+		this.width = widthInput;
 	}
 
 	/* -------------------- */
@@ -60,24 +60,18 @@ public class SnakeProDisplay {
 
 		// Draw the board and snake
 		// TODO: Add your code here :)
-		for(int y = 0; y < this.height; y++) {
-			for (int x = 0; x < this.width; x++) {
-				if (x == 0 || x == this.width - 1 || y == 0 || y == this.height - 1)
-					this.drawSquare(x, y, Preferences.COLOR_WALL);
-				else if (x == 1 * Preferences.CELL_SIZE && y == 1 * Preferences.CELL_SIZE)
-					this.drawSquare(x, y, Preferences.COLOR_BODY);
-				else if (x == 2 * Preferences.CELL_SIZE && y == 1 * Preferences.CELL_SIZE)
-					this.drawSquare(x, y, Preferences.COLOR_HEAD);
+		for(int i = 0; i < this.theData.getNumRows(); i++) {
+			for (int j = 0; j < this.theData.getNumColumns(); j++) {
+				this.drawSquare(j * Preferences.CELL_SIZE, i * Preferences.CELL_SIZE,
+						this.theData.getCellColor(i, j));
 			}
 		}
 		// The method drawSquare (below) will likely be helpful :)
 
 		
 		// Draw the game-over message, if appropriate.
-		if (this.theData.getGameOver()) {
+		if (this.theData.getGameOver())
 			this.displayGameOver();
-		}
-
 	}
 
 	/**
@@ -116,7 +110,7 @@ public class SnakeProDisplay {
 	public void displayTitle() {
 		this.theScreen.setFont(Preferences.TITLE_FONT);
 		this.theScreen.setColor(Preferences.TITLE_COLOR);
-		this.theScreen.drawString(Preferences.TITLE, 
+		this.theScreen.drawString(Preferences.TITLE,
 				Preferences.TITLE_X, Preferences.TITLE_Y);
 	}
 
